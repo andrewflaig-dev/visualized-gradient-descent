@@ -30,3 +30,9 @@ Then, these are evaluated at the z-axis to create the carpet
 
     Z doesn't have to be a formula...
     Z can just be a 2D array of real-world measurements! (This is what I'll eventually be doing)
+
+# Adding a line ON the surface
+All I have to do is add an additional plot onto the ax. The plot will be a line with valid data. Think of the surface as a 'carpet' and the line is 'footprints'
+The meshgrid created 2D matricies of shape 100x100, the line needs x,y,z 1D arrays of size N. N can be any number I choose, ie. 200 'steps'.
+    Hypothesising for later: N would be the amount of times the gradient is changed until convergence.
+    Study says N=100-300 is the 'sweet spot' for 3D
