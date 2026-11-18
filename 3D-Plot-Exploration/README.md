@@ -5,12 +5,12 @@
     Arange never includes stop value and needs a step range, linspace provides more accurate, predictable, and reliable data.
     Linspace also is easier to find steps between say irrational numbers such as pi
 
-# Going from parametric and scatter to WireFrame
+# Going from parametric and scatter to Surface
 Parametric and scatter plots take data in that is in a form of a 1D array.
 For these, they use x, y, z as a single path through space.
 
-When working towards a wireframe, we need to have data in a form of a 2D array.
-Consider a wireframe as a "carpet" or "sheet", every x-value must meet every y-value.
+When working towards a surface, we need to have data in a form of a 2D array.
+Consider a surface as a "carpet" or "sheet", every x-value must meet every y-value.
 Then, these are evaluated at the z-axis to create the carpet
     <b>Introduce: np.meshgrid...</b>
     <i>ooooo.... ahhhhhh....</i> lol
