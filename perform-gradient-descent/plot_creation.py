@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
 from matplotlib import cm
+import sympy as sp
 
 # Core data for every graph to be made
 fig = plt.figure()

@@ -3,11 +3,18 @@ import matplotlib.pyplot as plt
 import plot_creation
 import numpy as np
 from matplotlib.animation import FuncAnimation, PillowWriter
+import sympy as sp
 
 def perform_gradient_descent(fig, ax, z_func, lr=0.05, threshold = 100):
     x_start = ((ax.get_xlim()[1] * 2) * np.random.rand()) + ax.get_xlim()[0]
     y_start = (ax.get_ylim()[1] * 2) * np.random.rand() + ax.get_ylim()[0]
     z_start = z_func(x_start, y_start)
+
+    x, y = sp.symbols('x y')
+    f = z_func(x, y)
+
+    df_dx = sp.diff(f, x)
+    df_dy = sp.diff(f, y)
 
     ax.scatter(x_start, y_start, z_start + 0.05)
 
@@ -20,7 +27,7 @@ def perform_gradient_descent(fig, ax, z_func, lr=0.05, threshold = 100):
     curr_y = y_start
     curr_z = z_start
 
-    grad = np.array([2*curr_x, 2*curr_y])
+    grad = np.array([df_dx.subs({x: curr_x, y: curr_y}), df_dy.subs({x: curr_x, y: curr_y})])
 
     for _ in range(threshold):
         curr_coord = np.array([curr_x, curr_y])
@@ -32,7 +39,7 @@ def perform_gradient_descent(fig, ax, z_func, lr=0.05, threshold = 100):
         y_path.append(curr_y)
         z_path.append(curr_z)
 
-        grad = np.array([2*curr_x, 2*curr_y]) # for parabolic
+        grad = np.array([df_dx.subs({x: curr_x}), df_dy.subs({y: curr_y})])
 
     grad_line, = ax.plot([], [], [],      # Starts empty so x,y,z must be empty
                          color="crimson",
