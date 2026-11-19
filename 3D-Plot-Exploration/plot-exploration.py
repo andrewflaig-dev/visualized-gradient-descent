@@ -1,12 +1,14 @@
 import matplotlib
 import matplotlib.pyplot as plt
+from matplotlib import cm
 from matplotlib.animation import FuncAnimation, PillowWriter
 import numpy as np
+import rasterio
 
 ## Helper Functions
 def randrange(n, vmin, vmax):
     '''
-    This is to ensure that the data will fit within the constraints of the plot
+    This is to ensure that the data will fit within the constraints of the plot for the scatter plot
     '''
     return (vmax - vmin) * np.random.rand(n) + vmin
 
@@ -22,6 +24,9 @@ def create_gif(fig, ax, file_name, elevation=20, degree = 3, fps=20):
     plt.close(fig) # Save Memory
 
 def surface_function(X, Y):
+    '''
+    This is for the surface function for the ripple to reduce code as I use it more than once
+    '''
     # For practice, I'm going to make a ripple cause it looks cool [Z = sin(sqrt(X^2 + Y^2)) / sqrt(X^2 + Y^2))]
     R = np.sqrt(X**2 + Y**2)
     return np.sin(R) / (R + 1e-5) # 1e-5 is to avoid dividing by zero
@@ -45,7 +50,7 @@ def create_3d_line():
 
 # Create 3D Scatter plot
 def create_3d_scatter(n = 100):
-    np.random.seed(19680801) # Seed taken from https://matplotlib.org/stable/gallery/mplot3d/scatter3d.html documentation
+    np.random.seed(19680801) # Seed taken from https://matplotlib.org/stable/gallery/mplot3d/scatter3d.html documentation so I can compare ish, not really
 
     fig = plt.figure() # the 'canvas'
     ax = fig.add_subplot(projection="3d") # the 'drawing'
@@ -122,8 +127,57 @@ def create_3d_surface():
 
     create_gif(fig, ax, "surface_plot", degree=1)
 
+# Real World Data!
+# Create, clean, work data
+def load_smokeys_data(tif_path="smokeys_data.tif", step=3):
+    with rasterio.open(tif_path) as src:
+        # Read in elevation data
+        Z_gsm = src.read(1).astype(float)
+
+        # Clean Data
+        nodata = src.nodata
+        if nodata is not None:
+            Z_gsm[Z_gsm == nodata] = np.nan
+        Z_gsm[Z_gsm < 0] = np.nan
+
+        # Downsample to improve interaction with graph
+        Z_gsm = Z_gsm[::step, ::step]
+        Z_gsm = Z_gsm * 3.28084 # convert to feet
+
+        bounds = src.bounds
+        x_gsm = np.linspace(bounds.left, bounds.right, Z_gsm.shape[1])
+        y_gsm = np.linspace(bounds.bottom, bounds.top, Z_gsm.shape[0])
+        X_gsm, Y_gsm = np.meshgrid(x_gsm, y_gsm)
+
+        return X_gsm, Y_gsm, Z_gsm
+    
+# Create 3D Surface map of the Great Smokey Mountains
+def create_smokeys_surface(X, Y, Z):
+    fig = plt.figure()
+    ax = fig.add_subplot(projection="3d")
+
+    gsm = ax.plot_surface(X, Y, Z,
+                          cmap=cm.terrain,
+                          linewidth=0,
+                          antialiased=True,
+                          rstride=1, # Make sure to plot every data point
+                          cstride=1)
+
+    fig.colorbar(gsm,
+                 ax=ax,
+                 shrink=0.5,
+                 aspect=10,
+                 label="Elevation (ft)")
+
+    ax.set_xlabel("Longitude (degrees)")
+    ax.set_ylabel("Latitude (degrees)")
+    ax.set_title("Great Smokey Mountains Elevation Map")
+
+    create_gif(fig, ax, "smokeys_elevation", degree=4, fps=20)
 
 if __name__ == "__main__":
     # create_3d_line()
     # create_3d_scatter()
-    create_3d_surface()
+    # create_3d_surface()
+    X, Y, Z = load_smokeys_data()
+    create_smokeys_surface(X, Y, Z)
