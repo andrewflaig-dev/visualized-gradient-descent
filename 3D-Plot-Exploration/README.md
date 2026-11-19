@@ -75,7 +75,8 @@ Were going to need a line and a head. This is so that it loooks like the line is
 The head will be a point.
 
 ### Animated Line Graph
-<img src="images/tracer_animation.gif" alt="Tracer Animation Graph" width="50%" /> Based on what I've looked up, its tricky for the tracer to not appear "on top of everything" so I'm okay with this for now
+<img src="images/tracer_animation.gif" alt="Tracer Animation Graph" width="50%" /> 
+Based on what I've looked up, its tricky for the tracer to not appear "on top of everything" so I'm okay with this for now
 
 
 
