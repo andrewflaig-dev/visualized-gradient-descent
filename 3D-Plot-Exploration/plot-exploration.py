@@ -31,6 +31,40 @@ def surface_function(X, Y):
     R = np.sqrt(X**2 + Y**2)
     return np.sin(R) / (R + 1e-5) # 1e-5 is to avoid dividing by zero
 
+def add_lines_to_graph(ax):
+    '''
+    This just helps the surface function be ambiguous
+    '''
+    # Create the lines ON the surface - later helpful for adding the descent
+    # Start with something basic like slicing the surface
+    x_slice = np.linspace(-10, 10, 200) # 200 in the middle of that sweet spot from notes
+    y_slice = np.zeros_like(x_slice)    # y=0
+    z_slice = surface_function(x_slice, y_slice)
+
+    ax.plot(x_slice, y_slice, z_slice + 0.015, # data, + 0.015 is to help line be more visible and avoid Z-fighting
+            color='r',
+            linewidth=3,
+            zorder=10,
+            alpha=0.8,
+            label="Slice of surface (y=0)")
+
+    # add a spiral-like line now
+    theta = np.linspace(0, 4*np.pi, 200)
+    rad_spiral = np.linspace(0.2, 9.8, 200) # so the spiral can grow in and out of the graph
+
+    x_spiral = rad_spiral * np.cos(theta)
+    y_spiral = rad_spiral * np.sin(theta)
+    z_spiral = surface_function(x_spiral, y_spiral)
+
+    ax.plot(x_spiral, y_spiral, z_spiral + 0.015,
+            color = "k",
+            linewidth = 3,
+            zorder = 10,
+            alpha=0.8,
+            label="Spiral on surface")
+
+    return ax
+
 ## Graph Creation 
 # Create 3D Parametric (line) plot
 def create_3d_line():
@@ -68,7 +102,8 @@ def create_3d_scatter(n = 100):
     create_gif(fig, ax, "scatter_plot", degree=2, elevation=10)
 
 # Create 3D Surface plot
-def create_3d_surface():
+def create_3d_surface(add_lines=False, animate_line=False):
+    plot_name = "surface_plot"
     fig = plt.figure()
     ax = fig.add_subplot(projection="3d")
 
@@ -97,35 +132,81 @@ def create_3d_surface():
     ax.set_zlabel('Z (Elevation)')
     ax.set_title("3D Surface")
 
-    # Create the lines ON the surface - later helpful for adding the descent
-    # Start with something basic like slicing the surface
-    x_slice = np.linspace(-10, 10, 200) # 200 in the middle of that sweet spot from notes
-    y_slice = np.zeros_like(x_slice)    # y=0
-    z_slice = surface_function(x_slice, y_slice)
+    if add_lines:
+        ax = add_lines_to_graph(ax=ax)
+        plot_name = "surface_plot_with_lines"
 
-    ax.plot(x_slice, y_slice, z_slice + 0.015, # data, + 0.015 is to help line be more visible and avoid Z-fighting
-            color='r',
-            linewidth=3,
-            zorder=10,
-            alpha=0.8,
-            label="Slice of surface (y=0)")
+    if animate_line: 
+        create_animated_line(fig, ax)
+        return
 
-    # add a spiral-like line now
-    theta = np.linspace(0, 4*np.pi, 200)
-    rad_spiral = np.linspace(0.2, 9.8, 200) # so the spiral can grow in and out of the graph
+    create_gif(fig, ax, plot_name, degree=1)
 
-    x_spiral = rad_spiral * np.cos(theta)
-    y_spiral = rad_spiral * np.sin(theta)
-    z_spiral = surface_function(x_spiral, y_spiral)
 
-    ax.plot(x_spiral, y_spiral, z_spiral + 0.015,
-            color = "k",
-            linewidth = 3,
-            zorder = 10,
-            alpha=0.8,
-            label="Spiral on surface")
+# Create an animated line on the surface plot
+def create_animated_line(fig, ax, n_frames=160):
+    '''
+    Picks up from the create surface plot function and finishes with a different plot
+    '''
+    r_path = np.linspace(9.8, 0.2, n_frames)
+    theta = np.linspace(0, 6*np.pi, n_frames) # three rotations this time
 
-    create_gif(fig, ax, "surface_plot", degree=1)
+    x_path = r_path * np.cos(theta)
+    y_path = r_path * np.sin(theta)
+    z_path = surface_function(x_path, y_path) + 0.02
+
+    # Animation starts here, bang
+    # wihtout the comma, tracer line is NOT THE LINE ITSELF, but a list containing the line
+    # This is why we need the comma to unpack the tuple, ie. get the line out of it
+    # this goes for lead_point as well but for a point
+    tracer_line, = ax.plot([], [], [],      # Starts empty so x,y,z must be empty
+                          color="crimson",
+                          linewidth=3,
+                          alpha=0.9,
+                          zorder=10,
+                          label="Decent Trajectory")
+
+    lead_point, = ax.plot([], [], [],      # Starts empty so x,y,z must be empty
+                         marker="o",
+                         markersize=9,
+                         markerfacecolor="silver",
+                         markeredgecolor="k",
+                         markeredgewidth=1.2,
+                         zorder=11,
+                         label="Current State")
+
+    def update(frame):
+            # slice data from frame 0 to current
+            current_x_trail = x_path[:frame + 1]
+            current_y_trail = y_path[:frame + 1]
+            current_z_trail = z_path[:frame + 1]
+    
+            # update the line
+            tracer_line.set_data(current_x_trail, current_y_trail)
+            tracer_line.set_3d_properties(current_z_trail)
+
+            # update leading point
+            lead_point.set_data([x_path[frame]], [y_path[frame]])
+            lead_point.set_3d_properties([z_path[frame]])
+
+            return tracer_line, lead_point
+
+    anim = FuncAnimation(
+        fig,                # The canvas
+        update,             # The callback function, passes the current frame number into
+        frames=n_frames,    # the sequence of steps range(n_frames)
+        interval=33,        # playback speed/ delay between frames (1000 ms / interval) 33 is around 30fps
+        blit=False,         # must redraw the canvas
+        repeat=True         # will loop once n_frames - 1 is hit
+    )
+
+    # we wont return a spinning animation as the main point is to see the line move, not the entire figure
+    ax.set_title("Tracer with Leading Point")
+    ax.view_init(elev=30, azim=220)
+    plt.tight_layout()
+
+    anim.save("images/tracer_animation.gif", writer="pillow", fps=30)
+
 
 # Real World Data!
 # Create, clean, work data
@@ -179,5 +260,7 @@ if __name__ == "__main__":
     # create_3d_line()
     # create_3d_scatter()
     # create_3d_surface()
-    X, Y, Z = load_smokeys_data()
-    create_smokeys_surface(X, Y, Z)
+    # create_3d_surface(add_lines=True)
+    create_3d_surface(animate_line=True)
+    # X, Y, Z = load_smokeys_data()
+    # create_smokeys_surface(X, Y, Z)

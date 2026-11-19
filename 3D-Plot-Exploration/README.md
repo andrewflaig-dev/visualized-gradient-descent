@@ -1,9 +1,12 @@
 # Table of Contents
 - [Notes To Learn 3D Visualization](#Notes)
-- [Basic Parametric and Scatter Plots](#parametric-and-scatter-plots)
-- [Surface Notes and Creation](#going-from-parametric-and-scatter-to-surface)
+    - [Basic Parametric and Scatter Plots](#parametric-and-scatter-plots)
+- [Surface Notes](#going-from-parametric-and-scatter-to-surface)
+    - [Surface Graph](#surface-plot)
 - [Practice With Real World Data](#Real-World-Data)
-- [Smokey Mountains Elevation Visualization](#smokeys-elevation-visualization)
+    - [Smokey Mountains Elevation Visualization](#smokeys-elevation-visualization)
+- [Creating an animation of a line on a graph](#making-a-line-animated-on-a-surface)
+    - [Animated Line Graph](#animated-line-graph)
 
 # NOTES
 ## Linspace vs. Arange
@@ -59,10 +62,20 @@ The meshgrid created 2D matricies of shape 100x100, the line needs x,y,z 1D arra
 ## Visualize Great Smokey Mountains
 I love hiking. This last summer I did a five-day backpacking trip to The Great Smokey Mountains national park. My brother, my friend, and I sent out on this expedition in the North-Eastern part of the park. There were moments were we were on the Appalachian Trail and the border of Tennessee and North Carolina. We did a total of around 40 miles and it was definitely a memory I'll cherish forever.
 
-![Smokeys Photo](Great_Smokey_Mountains_Trip/Smokeys8.JPG) Me on the left - All photos were on my film camera, there's more in that folder if interested
+![Smokeys Photo](Great_Smokey_Mountains_Trip/Smokeys8.JPG) Me on the left - All photos were on film, there's more in that folder if interested
 
 ### Smokeys Elevation Visualization
 <img src="images/smokeys_elevation.gif" alt="Smokeys Elevation Graph" width="50%" />
 The graph animation is short due to run time and I was impatient...
+
+# Making a line animated on a surface
+This is to build intuition and understand of how to make a line move on a graph. I am looking forward to making the descent animated for the gradient decent. I think this would make it more visually appealing. I will be using the basic surface plot and the spiral line from the previous gif.
+
+Were going to need a line and a head. This is so that it loooks like the line is growing rather than drawing. 
+The head will be a point.
+
+### Animated Line Graph
+<img src="images/tracer_animation.gif" alt="Tracer Animation Graph" width="50%" /> Based on what I've looked up, its tricky for the tracer to not appear "on top of everything" so I'm okay with this for now
+
 
 
