@@ -12,8 +12,8 @@
     Linspace also is easier to find steps between say irrational numbers such as pi
 
 ### Parametric and Scatter Plots
-![Parametric Plot](/visualized-gradient-descent/3D-Plot-Exploration/images/line_plot.gif)
-![Scatter Plot](/visualized-gradient-descent/3D-Plot-Exploration/images/scatter_plot.gif)
+![Parametric Plot](images/line_plot.gif)
+![Scatter Plot](images/scatter_plot.gif)
 
 ## Going from parametric and scatter to Surface
 Parametric and scatter plots take data in that is in a form of a 1D array.
@@ -42,7 +42,7 @@ Then, these are evaluated at the z-axis to create the carpet
     Z can just be a 2D array of real-world measurements! (This is what I'll eventually be doing)
 
 ### Surface Plot
-![Surface Plot](/visualized-gradient-descent/3D-Plot-Exploration/images/surface_plot.gif)
+![Surface Plot](images/surface_plot.gif)
 
 ## Adding a line ON the surface
 All I have to do is add an additional plot onto the ax. The plot will be a line with valid data. Think of the surface as a 'carpet' and the line is 'footprints'
@@ -52,7 +52,7 @@ The meshgrid created 2D matricies of shape 100x100, the line needs x,y,z 1D arra
     Study says N=100-300 is the 'sweet spot' for 3D
 
 ### Surface Plot with Lines
-![Surface Plot With Lines](/visualized-gradient-descent/3D-Plot-Exploration/images/surface_plot_with_lines.gif)
+![Surface Plot With Lines](images/surface_plot_with_lines.gif)
 
 
 # Real-World-Data
@@ -62,6 +62,6 @@ I love hiking. This last summer I did a five-day backpacking trip to The Great S
 ![Smokeys Photo](Great_Smokey_Mountains_Trip/Smokeys8.JPG) Me on the left - All photos were on my film camera, there's more in that folder if interested
 
 ### Smokeys Elevation Visualization
-![Smokeys Elevation Graph](/visualized-gradient-descent/3D-Plot-Exploration/images/smokeys_elevation.gif) The graph animation is short due to run time and I was impatient...
+![Smokeys Elevation Graph](images/smokeys_elevation.gif) The graph animation is short due to run time and I was impatient...
 
 
