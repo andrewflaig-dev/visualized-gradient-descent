@@ -76,3 +76,4 @@ def perform_gradient_descent(fig, ax, z_func, lr=0.05, threshold = 100):
 if __name__ == "__main__":
     # fig, ax, z_func = plot_creation.paraboloid()
     # perform_gradient_descent(fig, ax, z_func)
+    pass
